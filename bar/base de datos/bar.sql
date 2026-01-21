@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-11-2025 a las 20:34:24
+-- Tiempo de generación: 21-01-2026 a las 21:23:12
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -68,13 +68,25 @@ CREATE TABLE `guarnicion` (
 
 CREATE TABLE `pedido` (
   `IdPedido` int(11) NOT NULL,
-  `IdPlato` int(11) NOT NULL,
   `IdUsuario` int(11) NOT NULL,
   `Monto` int(11) NOT NULL,
-  `Fecha` date NOT NULL,
-  `Guarnicion` varchar(200) NOT NULL,
+  `Fecha` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `pedidodetalle`
+--
+
+CREATE TABLE `pedidodetalle` (
+  `IdDetalle` int(11) NOT NULL,
+  `IdPlato` int(11) NOT NULL,
+  `IdPedido` int(11) NOT NULL,
+  `IdGuarnicion` int(11) DEFAULT NULL,
   `IdBebida` int(11) DEFAULT NULL,
-  `IdAderezo` int(11) DEFAULT NULL
+  `IdAderezo` int(11) DEFAULT NULL,
+  `SubTotal` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -90,9 +102,7 @@ CREATE TABLE `plato` (
   `Ingredientes` varchar(200) NOT NULL,
   `Descripcion` varchar(200) NOT NULL,
   `Costo` int(11) NOT NULL,
-  `IdGuarnicion` int(11) NOT NULL,
-  `ConBebidas` tinyint(1) NOT NULL,
-  `ConAderezo` tinyint(1) NOT NULL
+  `Imagen` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -105,7 +115,8 @@ CREATE TABLE `restaurante` (
   `IdRes` int(11) NOT NULL,
   `Nombre` varchar(200) NOT NULL,
   `Ubicacion` varchar(200) NOT NULL,
-  `Especialidad` varchar(200) NOT NULL
+  `Especialidad` varchar(200) NOT NULL,
+  `Imagen` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -123,7 +134,8 @@ CREATE TABLE `usuario` (
   `Email` varchar(200) NOT NULL,
   `Contraseña` varchar(200) NOT NULL,
   `Telefono` varchar(200) NOT NULL,
-  `Domicilio` varchar(200) NOT NULL
+  `Domicilio` varchar(200) NOT NULL,
+  `Avatar` varchar(200) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -153,18 +165,25 @@ ALTER TABLE `guarnicion`
 --
 ALTER TABLE `pedido`
   ADD PRIMARY KEY (`IdPedido`),
+  ADD KEY `IdUsuario` (`IdUsuario`);
+
+--
+-- Indices de la tabla `pedidodetalle`
+--
+ALTER TABLE `pedidodetalle`
+  ADD PRIMARY KEY (`IdDetalle`),
+  ADD KEY `IdPedido` (`IdPedido`),
   ADD KEY `IdPlato` (`IdPlato`),
-  ADD KEY `IdUsuario` (`IdUsuario`),
   ADD KEY `IdAderezo` (`IdAderezo`),
-  ADD KEY `IdBebida` (`IdBebida`);
+  ADD KEY `IdBebida` (`IdBebida`),
+  ADD KEY `IdGuarnicion` (`IdGuarnicion`);
 
 --
 -- Indices de la tabla `plato`
 --
 ALTER TABLE `plato`
   ADD PRIMARY KEY (`IdPlato`),
-  ADD KEY `IdRes` (`IdRes`),
-  ADD KEY `IdGuarnicion` (`IdGuarnicion`);
+  ADD KEY `IdRes` (`IdRes`);
 
 --
 -- Indices de la tabla `restaurante`
@@ -207,6 +226,12 @@ ALTER TABLE `pedido`
   MODIFY `IdPedido` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT de la tabla `pedidodetalle`
+--
+ALTER TABLE `pedidodetalle`
+  MODIFY `IdDetalle` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `plato`
 --
 ALTER TABLE `plato`
@@ -232,17 +257,23 @@ ALTER TABLE `usuario`
 -- Filtros para la tabla `pedido`
 --
 ALTER TABLE `pedido`
-  ADD CONSTRAINT `pedido_ibfk_1` FOREIGN KEY (`IdPlato`) REFERENCES `plato` (`IdPlato`),
-  ADD CONSTRAINT `pedido_ibfk_2` FOREIGN KEY (`IdUsuario`) REFERENCES `usuario` (`IdUsuario`),
-  ADD CONSTRAINT `pedido_ibfk_3` FOREIGN KEY (`IdAderezo`) REFERENCES `aderezo` (`IdAderezo`),
-  ADD CONSTRAINT `pedido_ibfk_4` FOREIGN KEY (`IdBebida`) REFERENCES `bebida` (`IdBebida`);
+  ADD CONSTRAINT `pedido_ibfk_2` FOREIGN KEY (`IdUsuario`) REFERENCES `usuario` (`IdUsuario`);
+
+--
+-- Filtros para la tabla `pedidodetalle`
+--
+ALTER TABLE `pedidodetalle`
+  ADD CONSTRAINT `pedidodetalle_ibfk_1` FOREIGN KEY (`IdPedido`) REFERENCES `pedido` (`IdPedido`),
+  ADD CONSTRAINT `pedidodetalle_ibfk_2` FOREIGN KEY (`IdPlato`) REFERENCES `plato` (`IdPlato`),
+  ADD CONSTRAINT `pedidodetalle_ibfk_3` FOREIGN KEY (`IdAderezo`) REFERENCES `aderezo` (`IdAderezo`) ON DELETE SET NULL,
+  ADD CONSTRAINT `pedidodetalle_ibfk_4` FOREIGN KEY (`IdBebida`) REFERENCES `bebida` (`IdBebida`) ON DELETE SET NULL,
+  ADD CONSTRAINT `pedidodetalle_ibfk_5` FOREIGN KEY (`IdGuarnicion`) REFERENCES `guarnicion` (`IdGuarnicion`) ON DELETE SET NULL;
 
 --
 -- Filtros para la tabla `plato`
 --
 ALTER TABLE `plato`
-  ADD CONSTRAINT `plato_ibfk_1` FOREIGN KEY (`IdRes`) REFERENCES `restaurante` (`IdRes`),
-  ADD CONSTRAINT `plato_ibfk_2` FOREIGN KEY (`IdGuarnicion`) REFERENCES `guarnicion` (`IdGuarnicion`);
+  ADD CONSTRAINT `plato_ibfk_1` FOREIGN KEY (`IdRes`) REFERENCES `restaurante` (`IdRes`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
