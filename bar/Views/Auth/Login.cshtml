@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h2>Iniciar sesión</h2>
+
+@if (ViewBag.Error != null)
+{
+    <p style="color:red">@ViewBag.Error</p>
+}
+
+<form asp-action="Login" method="post">
+
+    <div>
+        <label>Email</label><br />
+        <input type="email" name="email" required />
+    </div>
+
+    <div>
+        <label>Contraseña</label><br />
+        <input type="password" name="password" required />
+    </div>
+
+    <br />
+
+    <button type="submit">Ingresar</button>
+</form>
+
+<hr />
+
+<p>
+    ¿No tenés cuenta?
+    <a asp-controller="Auth" asp-action="Registro">
+        Registrate acá
+    </a>
+</p>

@@ -8,7 +8,7 @@ public class Usuario
 
     public required string Nick { get; set; }
     public required string Email { get; set; }
-    public required string Password { get; set; }
+    public required string PasswordHash { get; set; }
     public required string Telefono { get; set; }
     public required string Domicilio { get; set; }
     

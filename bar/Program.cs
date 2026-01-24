@@ -1,9 +1,22 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Bar.Repositorios;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<Bar.Data.Database>();
+builder.Services.AddScoped<RepositorioUsuario>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Auth/Login";
+        options.AccessDeniedPath = "/Home/AccesoDenegado";
+    });
+
+builder.Services.AddAuthorization();
+
 
 var app = builder.Build();
 
@@ -18,6 +31,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

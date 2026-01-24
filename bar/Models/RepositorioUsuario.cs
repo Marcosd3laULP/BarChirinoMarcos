@@ -15,30 +15,34 @@ namespace Bar.Repositorios
             _database = database;
         }
 
-        public void Crear(Usuario usuario, string password)
+        public void Crear(Usuario usuario)
         {
-            usuario.Password = PassHasher.Hash(password);
+            //usuario.Password = PassHasher.Hash(password);
 
             using var conn = _database.GetConnection();
             conn.Open();
 
             var sql = @"
                 INSERT INTO Usuario
-                (Nombre, Apellido, Nick, Email, Password, Telefono, Domicilio, Rol)
+                (Nombre, Apellido, Nick, Email, PasswordHash, Telefono, Domicilio, Rol, Avatar)
                 VALUES
-                (@Nombre, @Apellido, @Nick, @Email, @Password, @Telefono, @Domicilio, @Rol)";
+                (@Nombre, @Apellido, @Nick, @Email, @PasswordHash, @Telefono, @Domicilio, @Rol, @Avatar)";
 
             using var cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@Nombre", usuario.Nombre);
             cmd.Parameters.AddWithValue("@Apellido", usuario.Apellido);
             cmd.Parameters.AddWithValue("@Nick", usuario.Nick);
             cmd.Parameters.AddWithValue("@Email", usuario.Email);
-            cmd.Parameters.AddWithValue("@Password", usuario.Password);
+            cmd.Parameters.AddWithValue("@PasswordHash", usuario.PasswordHash);
             cmd.Parameters.AddWithValue("@Telefono", usuario.Telefono);
             cmd.Parameters.AddWithValue("@Domicilio", usuario.Domicilio);
             cmd.Parameters.AddWithValue("@Rol", usuario.Rol.ToString());
+            cmd.Parameters.AddWithValue(@"Avatar", usuario.Avatar);
 
             cmd.ExecuteNonQuery();
+
+            //Console.WriteLine("HASH GUARDADO: " + usuario.PasswordHash);
+
         }
 
         public UsuarioDTO? Login(string email, string password)
@@ -54,13 +58,19 @@ namespace Bar.Repositorios
             if (!reader.Read())
                 return null;
 
-            var storedHash = reader.GetString("Password");
+            
+            var storedHash = reader.GetString("PasswordHash");
+
+            //.WriteLine("HASH BD: " + storedHash);
+            //Console.WriteLine("PASS INGRESADA: " + password);
+
+
             if (!PassHasher.Verify(password, storedHash))
                 return null;
 
             return new UsuarioDTO
             {
-                IdUsuario = reader.GetInt32("Id"),
+                IdUsuario = reader.GetInt32("IdUsuario"),
                 Nombre = reader.GetString("Nombre"),
                 Apellido = reader.GetString("Apellido"),
                 Nick = reader.GetString("Nick"),

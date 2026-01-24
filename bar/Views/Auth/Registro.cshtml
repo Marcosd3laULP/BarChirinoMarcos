@@ -1,0 +1,21 @@
+<form asp-action="Registro" method="post" enctype="multipart/form-data">
+
+    <input name="Nombre" placeholder="Nombre" required/>
+    <input name="Apellido" placeholder="Apellido" required/>
+    <input name="Nick" placeholder="Nick/apodo" required/>
+    <input name="Email" placeholder="Correo electronico" required/>
+    <input name="Password" placeholder="Contraseña" required/>
+
+    <input name="Telefono" placeholder="Telefono" required/>
+    <input name="Domicilio" placeholder="Domicilio" required/>
+
+    <select name="Rol">
+        <option value="user">Cliente</option>
+        <option value="resto">Vendedor</option>
+    </select>
+
+    <input type="file" name="Avatar"/>
+
+    <button type="submit">Registrarse</button>
+
+</form>
