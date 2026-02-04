@@ -24,9 +24,9 @@ namespace Bar.Repositorios
 
             var sql = @"
                 INSERT INTO Usuario
-                (Nombre, Apellido, Nick, Email, PasswordHash, Telefono, Domicilio, Rol, Avatar)
+                (Nombre, Apellido, Nick, Email, PasswordHash, Telefono, Domicilio, Rol, Avatar, Estado)
                 VALUES
-                (@Nombre, @Apellido, @Nick, @Email, @PasswordHash, @Telefono, @Domicilio, @Rol, @Avatar)";
+                (@Nombre, @Apellido, @Nick, @Email, @PasswordHash, @Telefono, @Domicilio, @Rol, @Avatar, Estado)";
 
             using var cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@Nombre", usuario.Nombre);
@@ -37,7 +37,8 @@ namespace Bar.Repositorios
             cmd.Parameters.AddWithValue("@Telefono", usuario.Telefono);
             cmd.Parameters.AddWithValue("@Domicilio", usuario.Domicilio);
             cmd.Parameters.AddWithValue("@Rol", usuario.Rol.ToString());
-            cmd.Parameters.AddWithValue(@"Avatar", usuario.Avatar);
+            cmd.Parameters.AddWithValue("@Avatar", usuario.Avatar);
+            cmd.Parameters.AddWithValue("@Estado", usuario.Estado);
 
             cmd.ExecuteNonQuery();
 

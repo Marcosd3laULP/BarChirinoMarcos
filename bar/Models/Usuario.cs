@@ -14,4 +14,5 @@ public class Usuario
     
     public RolUsuario Rol { get; set; }
     public string? Avatar { get; set;}
+    public bool Estado { get; set; }
 }

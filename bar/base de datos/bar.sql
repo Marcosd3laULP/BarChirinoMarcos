@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-01-2026 a las 21:23:12
+-- Tiempo de generación: 04-02-2026 a las 23:53:19
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -70,7 +70,8 @@ CREATE TABLE `pedido` (
   `IdPedido` int(11) NOT NULL,
   `IdUsuario` int(11) NOT NULL,
   `Monto` int(11) NOT NULL,
-  `Fecha` date NOT NULL
+  `Fecha` date NOT NULL,
+  `Estado` tinyint(4) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -102,7 +103,8 @@ CREATE TABLE `plato` (
   `Ingredientes` varchar(200) NOT NULL,
   `Descripcion` varchar(200) NOT NULL,
   `Costo` int(11) NOT NULL,
-  `Imagen` varchar(200) DEFAULT NULL
+  `Imagen` varchar(200) DEFAULT NULL,
+  `Estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -116,7 +118,9 @@ CREATE TABLE `restaurante` (
   `Nombre` varchar(200) NOT NULL,
   `Ubicacion` varchar(200) NOT NULL,
   `Especialidad` varchar(200) NOT NULL,
-  `Imagen` varchar(200) DEFAULT NULL
+  `Imagen` varchar(200) DEFAULT NULL,
+  `IdUsuario` int(11) NOT NULL,
+  `Estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -132,10 +136,11 @@ CREATE TABLE `usuario` (
   `Apellido` varchar(200) NOT NULL,
   `Nick` varchar(200) NOT NULL,
   `Email` varchar(200) NOT NULL,
-  `Password` varchar(200) NOT NULL,
+  `Contraseña` varchar(200) NOT NULL,
   `Telefono` varchar(200) NOT NULL,
   `Domicilio` varchar(200) NOT NULL,
-  `Avatar` varchar(200) DEFAULT NULL
+  `Avatar` varchar(200) DEFAULT NULL,
+  `Estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -189,7 +194,8 @@ ALTER TABLE `plato`
 -- Indices de la tabla `restaurante`
 --
 ALTER TABLE `restaurante`
-  ADD PRIMARY KEY (`IdRes`);
+  ADD PRIMARY KEY (`IdRes`),
+  ADD KEY `IdUsuario` (`IdUsuario`);
 
 --
 -- Indices de la tabla `usuario`
@@ -274,6 +280,12 @@ ALTER TABLE `pedidodetalle`
 --
 ALTER TABLE `plato`
   ADD CONSTRAINT `plato_ibfk_1` FOREIGN KEY (`IdRes`) REFERENCES `restaurante` (`IdRes`);
+
+--
+-- Filtros para la tabla `restaurante`
+--
+ALTER TABLE `restaurante`
+  ADD CONSTRAINT `restaurante_ibfk_1` FOREIGN KEY (`IdUsuario`) REFERENCES `usuario` (`IdUsuario`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
