@@ -8,7 +8,7 @@ public class Restaurante
     public string Especialidad { get; set; }
     public string Imagen { get; set; }
 
-    public bool Estado { get; set; }
+    public bool Estado { get; set; } = true;
 
     //Clave foranea:
     public int IdUsuario { get; set; }

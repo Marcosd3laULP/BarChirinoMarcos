@@ -110,4 +110,20 @@ public class RepositorioRestaurante
             IdUsuario = reader.GetInt32("IdUsuario")
         };
     }
+
+    public Restaurante? BuscarPorUsuario(int idUsuario)
+    {
+        using var conn = _database.GetConnection();
+        conn.Open();
+
+        var query = "SELECT * FROM Restaurante WHERE IdUsuario = @id AND Estado = true";
+        using var cmd = new MySqlCommand(query, conn);
+        cmd.Parameters.AddWithValue("@id", idUsuario);
+
+        using var reader = cmd.ExecuteReader();
+        if(!reader.Read())
+        return null;
+
+    return Mapear(reader);
+    }
 }

@@ -7,6 +7,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<Bar.Data.Database>();
 builder.Services.AddScoped<RepositorioUsuario>();
+builder.Services.AddScoped<RepositorioRestaurante>();
+builder.Services.AddScoped<RepositorioPlato>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

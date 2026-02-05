@@ -1,0 +1,32 @@
+@model Bar.Models.Plato
+
+<h2>Nuevo platillo</h2>
+
+<form asp-action="Crear" method="post" enctype="multipart/form-data">
+    <div class = "mb-2">
+        <label>Nombre</label>
+        <input asp-for="Nombre" class="form-control"/>
+    </div>
+
+   <div class = "mb-2">
+        <label>Ingredientes</label>
+        <input asp-for="Ingredientes" class="form-control"/>
+    </div>
+
+    <div class = "mb-2">
+        <label>Descripcion</label>
+        <input asp-for="Descripcion" class="form-control"/>
+    </div>
+
+        <div class = "mb-2">
+        <label>Costo</label>
+        <input asp-for="Costo" class="form-control"/>
+    </div>
+
+    <div class = "mb-2">
+        <label>Foto</label>
+        <input type="file" name="Imagen" class="form-control"/>
+    </div>
+
+    <button class="btn btn-success">Guardar</button>
+</form>

@@ -136,7 +136,7 @@ CREATE TABLE `usuario` (
   `Apellido` varchar(200) NOT NULL,
   `Nick` varchar(200) NOT NULL,
   `Email` varchar(200) NOT NULL,
-  `Contraseña` varchar(200) NOT NULL,
+  `PasswordHash` varchar(200) NOT NULL,
   `Telefono` varchar(200) NOT NULL,
   `Domicilio` varchar(200) NOT NULL,
   `Avatar` varchar(200) DEFAULT NULL,

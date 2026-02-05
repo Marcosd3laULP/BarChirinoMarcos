@@ -1,0 +1,47 @@
+@model List<Bar.Models.Plato>
+
+<h2> Mis platillos</h2>
+
+<a asp-action="Crear" class="btn btn-primary mb-3">
+    Crear platillo
+</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Imagen</th>
+            <th>Nombre</th>
+            <th>Costo</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var p in Model)
+{
+    <tr>
+        <td>
+            <img src="@(string.IsNullOrEmpty(p.Imagen)
+            ? "/img/default-plato.png" :p.Imagen)"
+            width="80"/>
+        </td>
+        <td>@p.Nombre</td>
+        <td>@p.Costo</td>
+        <td>
+            <a asp-action="Detalle" asp-route-id="@p.IdPlato"
+            class="btn btn-info btn-sm">
+                Detalles
+            </a>
+
+            <a asp-action="Editar" asp-route-id="@p.IdPlato" class="btn btn-warning btn-sm">
+                Editar
+            </a>
+
+            <a asp-action="Baja" asp-route-id="@p.IdPlato" class="btn btn-danger btn-sm"
+            onclick="return confirn('¿Eliminar plato?')">
+                Eliminar
+            </a>
+        </td>
+    </tr>
+}
+    </tbody>
+</table>

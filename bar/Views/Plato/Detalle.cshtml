@@ -1,0 +1,18 @@
+@model Bar.Models.Plato
+
+<h2>@Model.Nombre</h2>
+
+<img src="@(string.IsNullOrEmpty(Model.Imagen) ? "/img/default-plato.png" : Model.Imagen)"
+style="max-width: 300px;"/>
+
+<p><strong>Costo:</strong> $ @Model.Costo</p>
+
+<h4>Ingredientes</h4>
+<p>@Model.Ingredientes</p>
+
+<h4>Descripcion</h4>
+<p>@Model.Ingredientes</p>
+
+<a asp-action="Indeex" class="btn btn-secondary">
+    Volver
+</a>

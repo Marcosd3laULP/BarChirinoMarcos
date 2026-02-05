@@ -5,19 +5,21 @@ using Bar.Models;
 using Bar.Repositorios;
 
 [Authorize(Roles = "resto")]
-public class RestoController : Controller
+public class RestauranteController : Controller
 {
     private readonly RepositorioRestaurante _repo;
 
-    public RestoController(RepositorioRestaurante repo)
+    public RestauranteController(RepositorioRestaurante repo)
     {
         _repo = repo;
     }
 
     public IActionResult Index()
     {
-        var lista = _repo.ListarTodos();
-        return View(lista);
+        int idUsuario = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+        var restaurante = _repo.BuscarPorUsuario(idUsuario);
+        return View(restaurante);
     }
 
     public IActionResult Crear()

@@ -51,6 +51,15 @@ public class AuthController : Controller
             new ClaimsPrincipal(identity)
         );
 
+        if (user.Rol == RolUsuario.resto)
+        {
+            return RedirectToAction("Index", "Restaurante");
+        }
+        else if(user.Rol == RolUsuario.user)
+        {
+            return RedirectToAction("Index", "Home");
+        }
+
         return RedirectToAction("Index", "Home");
     }
 

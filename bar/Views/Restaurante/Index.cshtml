@@ -1,0 +1,33 @@
+@model Bar.Models.Restaurante?
+
+@{
+    ViewData["Title"] = "Inicio Restaurante";
+}
+
+@if (Model == null)
+{
+<h2>¡Vamos a registra tu restaruante!</h2>
+<p>
+    Todavia no tienes un restaurante registrado.
+    Creá un para empezar a cargar tus platos y recibir pedidos.
+</p>
+
+<a asp-action="Crear" class="btn btn-primary"> Registrar restaruante</a>
+}
+else
+{
+<h2>Bienvenido @User.Identity.Name !</h2>
+
+<p>
+    restaurante: <strong>@Model.Nombre</strong>
+</p>
+
+<div style="margin-top:20px">
+    <a asp-controller="Plato" asp-action="Index" class="btn btn-success"> Gestionar platos
+    </a>
+
+    <a asp-action="Editar" asp-route-id="@Model.IdRes" class="btn btn-secondary">
+        Editar restaurante
+    </a>
+</div>
+}
