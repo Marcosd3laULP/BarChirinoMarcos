@@ -1,0 +1,65 @@
+@model Bar.Models.Plato
+
+@{
+    ViewData["Title"] = "Editar Plato";
+
+}
+
+<h2>Editar Plato</h2>
+
+<form asp-action="Editar" method="post" enctype="multipart/form-data">
+
+    <input type="hideen" asp-for="IdPlato"/>
+    <input type="hideen" asp-for="IdRes"/>
+    <input type="hideen" asp-for="Imagen"/>
+
+    <div class="mb-3">
+        <label asp-for="Nombre" class="form-label"></label>
+        <input asp-for="Nombre" class="form-control"/>
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+
+
+    <div class="mb-3">
+        <label asp-for="Ingredientes" class="form-label"></label>
+        <input asp-for="Ingredientes" class="form-control"/>
+        <span asp-validation-for="Ingredientes" class="text-danger"></span>
+    </div>
+
+
+    <div class="mb-3">
+        <label asp-for="Descripcion" class="form-label"></label>
+        <input asp-for="Descripcion" class="form-control"/>
+        <span asp-validation-for="Descripcion" class="text-danger"></span>
+    </div>
+
+
+    <div class="mb-3">
+        <label asp-for="Costo" class="form-label"></label>
+        <input asp-for="Costo" class="form-control"/>
+        <span asp-validation-for="Costo" class="text-danger"></span>
+    </div>
+
+    
+    <div class="mb-3">
+        <label class="form-label">Imagen actual</label><br />
+        <img src="@Model.Imagen" alt="Imagen plato" style="max-width:200px";
+    </div>
+    
+    <div class="mb-3">
+        <label class="form-label">Nueva imagen (opcional)</label>
+        <input type="file" name="Imagen" class="form-control"/>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Guardar cambios
+    </button>
+
+    <a asp-action="Index" class="btn btn-secondary">
+        Cancelar
+    </a>
+</form>
+
+@section Scripts {
+  <partial name="_ValidationScriptsPartial" />  
+}

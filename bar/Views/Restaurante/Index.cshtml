@@ -16,18 +16,29 @@
 }
 else
 {
-<h2>Bienvenido @User.Identity.Name !</h2>
+<div class="text-center">
+    <h2>Bienvenido @User.Identity.Name !</h2>
 
-<p>
-    restaurante: <strong>@Model.Nombre</strong>
-</p>
+    <p>
+        restaurante: <strong>@Model.Nombre</strong>
+    </p>
 
-<div style="margin-top:20px">
-    <a asp-controller="Plato" asp-action="Index" class="btn btn-success"> Gestionar platos
-    </a>
 
-    <a asp-action="Editar" asp-route-id="@Model.IdRes" class="btn btn-secondary">
-        Editar restaurante
-    </a>
+    <div style="margin: 20px 0;">
+        <img src="@(string.IsNullOrEmpty(Model.Imagen)
+        ? "img/default-restaurante.jpg" :Model.Imagen)"
+        alt="Foto del restarurante"
+        style="max-width: 300px; width:100%; border-radius:12px; box-shadow:0 0 10px rgba(0,0,0,.2)"/>
+    </div>
+
+    <div style="margin-top:20px">
+        <a asp-controller="Plato" asp-action="Index" class="btn btn-success"> 
+            Gestionar platos
+        </a>
+
+        <a asp-action="Editar" asp-route-id="@Model.IdRes" class="btn btn-secondary">
+            Editar restaurante
+        </a>
+    </div>
 </div>
 }

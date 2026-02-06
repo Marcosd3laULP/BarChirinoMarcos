@@ -105,7 +105,7 @@ public class RepositorioPlato
 
         var query = @"UPDATE Plato
                     SET Nombre=@nombre, Ingredientes=@ingredientes, Descripcion=@descripcion, Costo=@costo, Imagen=@imagen
-                    WHERE IdPlato = @id";
+                    WHERE IdPlato = @IdPlato";
         
         using var cmd = new MySqlCommand(query, conn);
         cmd.Parameters.AddWithValue("@nombre", p.Nombre);
@@ -113,6 +113,7 @@ public class RepositorioPlato
         cmd.Parameters.AddWithValue("@descripcion", p.Descripcion);
         cmd.Parameters.AddWithValue("@costo", p.Costo);
         cmd.Parameters.AddWithValue("@imagen", p.Imagen);
+        cmd.Parameters.AddWithValue("@IdPlato", p.IdPlato);
 
         cmd.ExecuteNonQuery();
     }

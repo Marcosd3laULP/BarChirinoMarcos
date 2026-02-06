@@ -6,7 +6,7 @@ public class Restaurante
     public string Nombre { get; set; }
     public string Ubicacion { get; set; }
     public string Especialidad { get; set; }
-    public string Imagen { get; set; }
+    public string? Imagen { get; set; }
 
     public bool Estado { get; set; } = true;
 

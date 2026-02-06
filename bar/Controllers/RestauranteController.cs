@@ -28,9 +28,21 @@ public class RestauranteController : Controller
     }
 
     [HttpPost]
-    public IActionResult Crear(Restaurante r)
+    public IActionResult Crear(Restaurante r, IFormFile? Imagen)
     {
         r.IdUsuario = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        
+        if(Imagen != null && Imagen.Length > 0)
+        {
+            var fileName = Guid.NewGuid() + Path.GetExtension(Imagen.FileName);
+            var path = Path.Combine("wwwroot/restaurante", fileName);
+
+            using var stream = new FileStream(path, FileMode.Create);
+            Imagen.CopyTo(stream);
+
+            r.Imagen = "/restaurante/" + fileName;
+        }
+
         _repo.Crear(r);
         return RedirectToAction("Index");
     }
@@ -43,8 +55,19 @@ public class RestauranteController : Controller
     }
 
     [HttpPost]
-    public IActionResult Editar(Restaurante r)
+    public IActionResult Editar(Restaurante r, IFormFile? Imagen)
     {
+
+         if(Imagen != null && Imagen.Length > 0)
+        {
+            var fileName = Guid.NewGuid() + Path.GetExtension(Imagen.FileName);
+            var path = Path.Combine("wwwroot/restaurante", fileName);
+
+            using var stream = new FileStream(path, FileMode.Create);
+            Imagen.CopyTo(stream);
+
+            r.Imagen = "/restaurante/" + fileName;
+        }
         _repo.Editar(r);
         return RedirectToAction("Index");
     }

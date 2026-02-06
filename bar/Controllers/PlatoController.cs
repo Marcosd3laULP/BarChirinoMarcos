@@ -71,8 +71,20 @@ public class PlatoController : Controller
     }
 
     [HttpPost]
-    public IActionResult Editar(Plato p)
+    public IActionResult Editar(Plato p, IFormFile? Imagen)
     {
+
+        if(Imagen != null && Imagen.Length > 0)
+        {
+            var fileName = Guid.NewGuid() + Path.GetExtension(Imagen.FileName);
+            var path = Path.Combine("wwwroot/platos", fileName);
+
+            using var stream = new FileStream(path, FileMode.Create);
+            Imagen.CopyTo(stream);
+
+            p.Imagen = "/platos/" + fileName;
+        }
+        
         repoPlato.Editar(p);
         return RedirectToAction("Index");
     }
@@ -81,5 +93,11 @@ public class PlatoController : Controller
     {
        repoPlato.Baja(id);
        return RedirectToAction("Index"); 
+    }
+
+    public IActionResult Detalle(int id)
+    {
+        var plato = repoPlato.ObtenerPorId(id);
+        return View(plato);
     }
 }

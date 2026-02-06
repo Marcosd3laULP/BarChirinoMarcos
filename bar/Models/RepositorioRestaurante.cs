@@ -75,13 +75,14 @@ public class RepositorioRestaurante
 
         var query = @"UPDATE Restaurante
                     SET Nombre=@nombre, Ubicacion=@ubicacion, Especialidad=@especialidad, Imagen=@imagen
-                    WHERE IdRes = @id";
+                    WHERE IdRes = @IdRes";
         
         using var cmd = new MySqlCommand(query, conn);
         cmd.Parameters.AddWithValue("@nombre", r.Nombre);
         cmd.Parameters.AddWithValue("@ubicacion", r.Ubicacion);
         cmd.Parameters.AddWithValue("@Especialidad", r.Especialidad);
         cmd.Parameters.AddWithValue("@Imagen", r.Imagen);
+        cmd.Parameters.AddWithValue("@IdRes", r.IdRes);
 
         cmd.ExecuteNonQuery();
     }
@@ -107,7 +108,9 @@ public class RepositorioRestaurante
             Ubicacion = reader.GetString("Ubicacion"),
             Especialidad = reader.GetString("Especialidad"),
             Estado = reader.GetBoolean("Estado"),
-            IdUsuario = reader.GetInt32("IdUsuario")
+            IdUsuario = reader.GetInt32("IdUsuario"),
+            Imagen = reader.IsDBNull(reader.GetOrdinal("Imagen"))
+            ? "/img/default-restaurante.jpg" : reader.GetString("Imagen")
         };
     }
 
