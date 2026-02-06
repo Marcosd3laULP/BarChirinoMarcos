@@ -1,10 +1,10 @@
-@model List<Bar.Models.Plato>
-
 <h2> Mis platillos</h2>
 
 <a asp-action="Crear" class="btn btn-primary mb-3">
     Crear platillo
 </a>
+
+<div id="app">
 
 <table class="table table-striped">
     <thead>
@@ -16,31 +16,78 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var p in Model)
-{
-    <tr>
-        <td>
-            <img src="@(string.IsNullOrEmpty(p.Imagen)
-            ? "/img/default-plato.png" :p.Imagen)"
-            width="80"/>
-        </td>
-        <td>@p.Nombre</td>
-        <td>@p.Costo</td>
-        <td>
-            <a asp-action="Detalle" asp-route-id="@p.IdPlato" class="btn btn-info btn-sm">
+        <tr v-for="p in platos" :key="p.idPlato">
+            <td>
+                <img
+                    v-bind:src="p.imagen ? p.imagen : '/img/default-plato.png'"
+                    width="80" />
+
+            </td>
+            <td>{{ p.nombre }}</td>
+            <td>{{ p.costo }}</td>
+            <td>
+                <a 
+                v-bind:href="`/Plato/Detalle/${p.idPlato}`"
+                class="btn btn-info btn-sm">
                 Detalles
-            </a>
+                </a>
 
-            <a asp-action="Editar" asp-route-id="@p.IdPlato" class="btn btn-warning btn-sm">
+                <a 
+                v-bind:href="`/Plato/Editar/${p.idPlato}`"
+                class="btn btn-warning btn-sm">
                 Editar
-            </a>
+                </a>
 
-            <a asp-action="Baja" asp-route-id="@p.IdPlato" class="btn btn-danger btn-sm"
-            onclick="return confirn('¿Eliminar plato?')">
+                <a 
+                href="#"
+                class="btn btn-danger btn-sm"
+                v-on:click.prevent="confirmarBaja(p.idPlato)">
                 Eliminar
-            </a>
-        </td>
-    </tr>
-}
+                </a>
+            </td>
+        </tr>
     </tbody>
 </table>
+
+ <!-- PAGINADO NUMERADO (ACÁ VA) -->
+    <nav class="d-flex justify-content-center mt-3">
+        <ul class="pagination">
+
+            <li class="page-item" v-bind:class="{ disabled: page === 1 }">
+                <a class="page-link"
+                   href="#"
+                   v-on:click.prevent="prevPage">
+                    «
+                </a>
+            </li>
+
+            <li class="page-item"
+                v-for="n in totalPages"
+                :key="n"
+                v-bind:class="{ active: n === page }">
+                <a class="page-link"
+                   href="#"
+                   v-on:click.prevent="irAPagina(n)">
+                    {{ n }}
+                </a>
+            </li>
+
+            <li class="page-item"
+                v-bind:class="{ disabled: page === totalPages }">
+                <a class="page-link"
+                   href="#"
+                   v-on:click.prevent="nextPage">
+                    »
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+    </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="~/js/plates.js"></script>
+}
+

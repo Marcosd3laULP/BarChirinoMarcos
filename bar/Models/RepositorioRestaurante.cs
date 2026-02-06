@@ -7,6 +7,7 @@ namespace Bar.Repositorios;
 public class RepositorioRestaurante
 {
     private readonly Database _database;
+    private string connectionString;
 
     public RepositorioRestaurante(Database database)
     {

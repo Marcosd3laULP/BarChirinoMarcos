@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Bar.Models;
 using Bar.Repositorios;
+using Bar.Data;
 
 [Authorize (Roles = "resto")]
 public class PlatoController : Controller
@@ -26,8 +27,29 @@ public class PlatoController : Controller
         if(restaurante == null)
             return RedirectToAction("Crear", "Restaurante");
 
-        var platos = repoPlato.ObtenerPorRestaurante(restaurante.IdRes);
-        return View(platos);
+        return View(); //Vue ahora se encarga del listado
+    }
+
+    [HttpGet]
+    public IActionResult GetPlatos(int page =1, int pageSize = 6)
+    {
+         int idUsuario = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+        var restaurante = repoResto.BuscarPorUsuario(idUsuario);
+        if(restaurante == null)
+            return Json(new {data = new List<Plato>(), total = 0});
+
+        int total = repoPlato.ContarPorRestaurante(restaurante.IdRes);
+
+        var platos = repoPlato.ObtenerPorRestaurantePaginado(restaurante.IdRes, page, pageSize);
+
+        return Json(new
+        {
+            data = platos,
+            total = total,
+            page = page,
+            pageSize = pageSize
+        });
     }
 
     public IActionResult Crear()

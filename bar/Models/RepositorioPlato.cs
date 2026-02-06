@@ -145,4 +145,53 @@ public class RepositorioPlato
             ? "/img/default-plato.png" : reader.GetString("Imagen")
         };
     }
+
+    
+    public int ContarPorRestaurante(int IdRes)
+    {
+        using var conn = _database.GetConnection();
+        conn.Open();
+
+        var query = "SELECT COUNT(*) FROM plato WHERE IdRes = @IdRes AND plato.Estado = true";
+        using var cmd = new MySqlCommand(query, conn);
+        cmd.Parameters.AddWithValue("@IdRes", IdRes);
+
+        return Convert.ToInt32(cmd.ExecuteScalar());
+    }
+
+    public List<Plato> ObtenerPorRestaurantePaginado(int IdRes, int page, int pageSize)
+    {
+        var lista = new List<Plato>();
+        int offset = (page - 1) * pageSize;
+
+        using var conn = _database.GetConnection();
+        conn.Open();
+
+        var query= @"SELECT IdPlato, Nombre, Costo, Imagen
+        FROM plato
+        WHERE IdRes = @IdRes AND plato.Estado = true
+        ORDER BY IdPlato
+        LIMIT @limit OFFSET @offset";
+
+        using var cmd = new MySqlCommand(query, conn);
+
+        cmd.Parameters.AddWithValue("@IdRes", IdRes);
+        cmd.Parameters.AddWithValue("@limit", pageSize);
+        cmd.Parameters.AddWithValue("@offset", offset);
+
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            int colImagen = reader.GetOrdinal("Imagen");
+
+            lista.Add(new Plato
+            {
+                IdPlato = reader.GetInt32("IdPlato"),
+                Nombre = reader.GetString("Nombre"),
+                Costo = reader.GetInt32("Costo"),
+                Imagen = reader.IsDBNull(colImagen) ? null : reader.GetString("Imagen")
+            });
+        }
+        return lista;
+    }
 }
