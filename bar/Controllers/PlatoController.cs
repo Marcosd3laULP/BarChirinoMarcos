@@ -31,17 +31,34 @@ public class PlatoController : Controller
     }
 
     [HttpGet]
-    public IActionResult GetPlatos(int page =1, int pageSize = 6)
+    public IActionResult GetPlatos(
+        int page =1, 
+        int pageSize = 6,
+        string? nombre = null,
+        string? ingredientes = null,
+        int? costoMax = null)
     {
          int idUsuario = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
         var restaurante = repoResto.BuscarPorUsuario(idUsuario);
+        
         if(restaurante == null)
             return Json(new {data = new List<Plato>(), total = 0});
 
-        int total = repoPlato.ContarPorRestaurante(restaurante.IdRes);
+        
+        int total = repoPlato.ContarFiltrados(
+            restaurante.IdRes,
+            nombre,
+            ingredientes,
+            costoMax);
 
-        var platos = repoPlato.ObtenerPorRestaurantePaginado(restaurante.IdRes, page, pageSize);
+        var platos = repoPlato.ObtenerFiltradosPaginado(
+            restaurante.IdRes, 
+            page, 
+            pageSize,
+            nombre,
+            ingredientes,
+            costoMax);
 
         return Json(new
         {
@@ -111,11 +128,22 @@ public class PlatoController : Controller
         return RedirectToAction("Index");
     }
 
-    public IActionResult Baja(int id)
+   
+ [HttpDelete]
+    public IActionResult BajaAjax(int id)
     {
-       repoPlato.Baja(id);
-       return RedirectToAction("Index"); 
+        try
+        {
+            Console.WriteLine("ENTRÓ A BAJA AJAX, ID = " + id);
+            repoPlato.Baja(id); // baja lógica en MySQL
+            return Ok();
+        }
+        catch
+        {
+            return BadRequest();
+        }
     }
+
 
     public IActionResult Detalle(int id)
     {

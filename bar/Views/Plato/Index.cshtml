@@ -6,6 +6,55 @@
 
 <div id="app">
 
+   <div class="mb-3">
+
+    <button class="btn btn-outline-secondary"
+            data-bs-toggle="collapse"
+            data-bs-target="#panelFiltros">
+             Filtros
+    </button>
+
+    <div id="panelFiltros" class="collapse mt-3">
+        <div class="card card-body">
+
+            <div class="row g-2">
+
+                <div class="col-md-4">
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Buscar por nombre"
+                           v-model="filtroNombre">
+                </div>
+
+                <div class="col-md-4">
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Ingredientes (ej: pollo, queso)"
+                           v-model="filtroIngredientes">
+                </div>
+
+                <div class="col-md-2">
+                    <input type="number"
+                           class="form-control"
+                           placeholder="Costo máx"
+                           v-model="filtroCostoMax">
+                </div>
+
+                <div class="col-md-2 d-grid">
+                    <button class="btn btn-primary"
+                            v-on:click="buscar">
+                        Aplicar
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
 <table class="table table-striped">
     <thead>
         <tr>
@@ -16,7 +65,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr v-for="p in platos" :key="p.idPlato">
+        <tr v-for="p in platos" :key="p.idPlato" :class="{ 'table-danger': platoAEliminar === p.idPlato}">
             <td>
                 <img
                     v-bind:src="p.imagen ? p.imagen : '/img/default-plato.png'"
@@ -25,26 +74,37 @@
             </td>
             <td>{{ p.nombre }}</td>
             <td>{{ p.costo }}</td>
+
             <td>
-                <a 
-                v-bind:href="`/Plato/Detalle/${p.idPlato}`"
-                class="btn btn-info btn-sm">
-                Detalles
-                </a>
+    <template v-if="platoAEliminar === p.idPlato">
+        <button class="btn btn-danger btn-sm"
+                v-on:click="confirmarBaja(p)">
+            Confirmar
+        </button>
+        <button class="btn btn-secondary btn-sm"
+                v-on:click="cancelarBaja">
+            Cancelar
+        </button>
+    </template>
 
-                <a 
-                v-bind:href="`/Plato/Editar/${p.idPlato}`"
-                class="btn btn-warning btn-sm">
-                Editar
-                </a>
+    <template v-else>
+        <a :href="`/Plato/Detalle/${p.idPlato}`"
+           class="btn btn-info btn-sm">
+           Detalles
+        </a>
 
-                <a 
-                href="#"
-                class="btn btn-danger btn-sm"
-                v-on:click.prevent="confirmarBaja(p.idPlato)">
-                Eliminar
-                </a>
-            </td>
+        <a :href="`/Plato/Editar/${p.idPlato}`"
+           class="btn btn-warning btn-sm">
+           Editar
+        </a>
+
+        <button class="btn btn-danger btn-sm"
+                v-on:click="pedirConfirmacion(p)">
+            Eliminar
+        </button>
+    </template>
+</td>
+
         </tr>
     </tbody>
 </table>

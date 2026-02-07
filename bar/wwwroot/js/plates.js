@@ -2,16 +2,24 @@ new Vue({
     el: "#app",
     data: {
         platos: [],
+        platoAEliminar: null,
         page: 1,
         pageSize: 5,
-        total: 0
+        total: 0,
+
+        filtroNombre: "",
+        filtroIngredientes: "",
+        filtroCostoMax: ""
     },
     methods: {
         cargarPlatos() {
             axios.get('/Plato/GetPlatos', {
                 params: {
                     page: this.page,
-                    pageSize: this.pageSize
+                    pageSize: this.pageSize,
+                    nombre: this.filtroNombre,
+                    ingredientes: this.filtroIngredientes,
+                    costoMax: this.filtroCostoMax
                 }
             })
             .then(r => {
@@ -19,6 +27,12 @@ new Vue({
                 this.total = r.data.total;
             });
         },
+
+        buscar(){
+            this.page = 1;
+            this.cargarPlatos();
+        },
+        
         nextPage() {
             if (this.page * this.pageSize < this.total) {
                 this.page++;
@@ -31,11 +45,34 @@ new Vue({
                 this.cargarPlatos();
             }
         },
-        confirmarBaja(id) {
-            if (confirm("¿Eliminar plato?")) {
-                window.location.href = `/Plato/Baja/${id}`;
-            }
+
+        pedirConfirmacion(plato){
+            this.platoAEliminar = plato.idPlato;
+        },
+
+
+        cancelarBaja(){
+            this.platoAEliminar = null;
+        },
+
+
+        confirmarBaja(plato) {
+    fetch(`/Plato/BajaAjax/${plato.idPlato}`, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al eliminar');
         }
+
+        this.platos = this.platos.filter(p => p.idPlato !== plato.idPlato);
+        this.platoAEliminar = null;
+       
+    })
+    .catch(() => {
+        alert('No se pudo eliminar el plato');
+    });
+}
     },
     mounted() {
         this.cargarPlatos();
