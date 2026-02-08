@@ -80,5 +80,23 @@ namespace Bar.Repositorios
 
             };
         }
+
+         private Usuario Mapear(MySqlDataReader reader)
+    {
+        return new Usuario
+        {
+            IdUsuario = reader.GetInt32("IdUsuario"),
+            Nombre = reader.GetString("Nombre"),
+            Apellido = reader.GetString("Apellido"),
+            Nick = reader.GetString("Nick"),
+            Email = reader.GetString("Email"),
+            PasswordHash = reader.GetString("PasswordHash"),
+            Domicilio = reader.GetString("Domicilio"),
+            Telefono = reader.GetString("Telefono"),
+            Estado = reader.GetBoolean("Estado"),
+            Avatar = reader.IsDBNull(reader.GetOrdinal("Avatar"))
+            ? "/img/default-avatar.png" : reader.GetString("Avatar")
+        };
+    }
     }
 }

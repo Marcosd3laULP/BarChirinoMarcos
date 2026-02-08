@@ -57,7 +57,7 @@ public class AuthController : Controller
         }
         else if(user.Rol == RolUsuario.user)
         {
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Cliente");
         }
 
         return RedirectToAction("Index", "Home");
