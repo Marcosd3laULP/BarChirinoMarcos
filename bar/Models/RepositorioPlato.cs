@@ -308,4 +308,117 @@ public List<Plato> ObtenerFiltradosPaginado(
     return lista;
 }
 
+/////////////   PARTE DEL CLIENTE   ///////////////
+
+public int ContarFiltradosPublicos(
+    string? nombre,
+    string? ingredientes,
+    int? costoMax
+)
+    {
+        using var conn = _database.GetConnection();
+        conn.Open();
+        
+        var query = @"SELECT COUNT(*) FROM plato 
+                    WHERE Estado = true";
+        using var cmd = new MySqlCommand(query, conn);
+
+        if (!string.IsNullOrWhiteSpace(nombre))
+        {
+            query += " AND Nombre LIKE @nombre";
+            cmd.Parameters.AddWithValue("@nombre", $"%{nombre}%");
+
+        }
+
+        if (!string.IsNullOrWhiteSpace(ingredientes))
+        {
+            var palabras = ingredientes.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            int i = 0;
+
+            foreach (var ing in palabras)
+            {
+                query += $" AND Ingredientes LIKE @ing{i}";
+                cmd.Parameters.AddWithValue($"@ing{i}", $"%{ing.Trim()}%");
+                i++;         
+            }
+        }
+
+        if (costoMax.HasValue)
+        {
+            query += " AND Costo <= @costoMax";
+            cmd.Parameters.AddWithValue("@costoMax", costoMax.Value);
+
+        }
+
+        cmd.CommandText = query;
+        return Convert.ToInt32(cmd.ExecuteScalar());
+    }
+
+    public List<Plato> ObtenerFiltradosPublicosPaginado(
+        int page,
+        int pageSize,
+        string? nombre,
+        string? ingredientes,
+        int? costoMax
+    )
+    {
+       var lista = new List<Plato>();
+       int offset = (page -1) * pageSize;
+
+       using var conn = _database.GetConnection();
+       conn.Open();
+
+       var query = @"SELECT IdPlato, Nombre, Costo, Imagen, IdRes
+       FROM plato
+       WHERE Estado = true"; 
+
+       using var cmd = new MySqlCommand(query, conn);
+       
+       if (!string.IsNullOrWhiteSpace(nombre))
+    {
+        query += " AND Nombre LIKE @nombre";
+        cmd.Parameters.AddWithValue("@nombre", $"%{nombre}%");
+    }
+
+    if (!string.IsNullOrWhiteSpace(ingredientes))
+    {
+        var palabras = ingredientes.Split(',', StringSplitOptions.RemoveEmptyEntries);
+        int i = 0;
+        foreach (var ing in palabras)
+        {
+            query += $" AND Ingredientes LIKE @ing{i}";
+            cmd.Parameters.AddWithValue($"@ing{i}", $"%{ing.Trim()}%");
+            i++;
+        }
+    }
+
+    if (costoMax.HasValue)
+    {
+        query += " AND Costo <= @costoMax";
+        cmd.Parameters.AddWithValue("@costoMax", costoMax.Value);
+    }
+
+    query += @" ORDER BY IdPlato
+                LIMIT @limit OFFSET @offset";
+    cmd.Parameters.AddWithValue("@limit", pageSize);
+    cmd.Parameters.AddWithValue("@offset", offset);
+
+    cmd.CommandText = query;
+
+    using var reader = cmd.ExecuteReader();
+        while (reader.Read())
+        {
+            int colImagen = reader.GetOrdinal("Imagen");
+            lista.Add(new Plato
+            {
+                IdPlato = reader.GetInt32("IdPlato"),
+            Nombre = reader.GetString("Nombre"),
+            Costo = reader.GetInt32("Costo"),
+            Imagen = reader.IsDBNull(colImagen) ? null : reader.GetString("Imagen"),
+            IdRes = reader.GetInt32("IdRes")
+            });
+        }
+        return lista;
+    }
+
 }

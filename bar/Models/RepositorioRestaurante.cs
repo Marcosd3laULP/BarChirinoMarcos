@@ -20,8 +20,8 @@ public class RepositorioRestaurante
         conn.Open();
 
         var query = @"INSERT INTO Restaurante
-        (Nombre, Ubicacion, Especialidad, Imagen, IdUsuario)
-        VALUES (@Nombre, @Ubicacion, @Especialidad, @Imagen, @IdUsuario)";
+        (Nombre, Ubicacion, Especialidad, Imagen, IdUsuario, Estado)
+        VALUES (@Nombre, @Ubicacion, @Especialidad, @Imagen, @IdUsuario, 1)";
 
         using var cmd = new MySqlCommand(query, conn);
         cmd.Parameters.AddWithValue("@Nombre", resto.Nombre);
@@ -29,7 +29,7 @@ public class RepositorioRestaurante
         cmd.Parameters.AddWithValue("@Especialidad", resto.Especialidad);
         cmd.Parameters.AddWithValue("@Imagen", resto.Imagen);
         cmd.Parameters.AddWithValue("@IdUsuario", resto.IdUsuario);
-
+        
         cmd.ExecuteNonQuery();
     }
 

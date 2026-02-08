@@ -1,0 +1,64 @@
+<div id="appRestaurante" class="container mt-4">
+
+    <h3 class="text-center mb-4">
+        Platos del restaurante
+    </h3>
+
+    <div class="row g-4">
+
+        <div class="col-md-4"
+             v-for="p in platos"
+             :key="p.idPlato">
+
+            <div class="card h-100 shadow-sm"
+                 style="cursor:pointer"
+                 v-on:click="verDetalle(p.idPlato)">
+
+                <img class="card-img-top"
+                     :src="p.imagen ? p.imagen : '/img/default-plato.png'"
+                     style="height:220px; object-fit:cover" />
+
+                <div class="card-body text-center">
+                    <h5>{{ p.nombre }}</h5>
+                    <p class="fw-bold text-success">
+                        $ {{ p.costo }}
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center gap-2 mt-4">
+
+        <button class="btn btn-secondary"
+                v-on:click="prevPage"
+                :disabled="page === 1">
+            Anterior
+        </button>
+
+        <span>
+            Página {{ page }} de {{ totalPages }}
+        </span>
+
+        <button class="btn btn-secondary"
+                v-on:click="nextPage"
+                :disabled="page === totalPages">
+            Siguiente
+        </button>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        const ID_RESTAURANTE = @ViewBag.IdRes;
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="~/js/plates-restaurant.js"></script>
+}

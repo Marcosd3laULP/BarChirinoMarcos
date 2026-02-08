@@ -1,0 +1,54 @@
+@model Bar.Models.Plato
+
+<div class="container d-flex justify-content-center mt-5">
+
+    <div class="card shadow-lg p-4"
+         style="max-width: 700px; width:100%; border: 3px solid #ffc107;">
+
+        <div class="text-center">
+
+            <h2 class="mb-3">@Model.Nombre</h2>
+
+            <img src="@(string.IsNullOrEmpty(Model.Imagen) 
+                        ? "/img/default-plato.png" 
+                        : Model.Imagen)"
+                 class="img-fluid rounded mb-3"
+                 style="max-height: 350px; object-fit: cover;" />
+
+            <h4 class="text-success mb-3">
+                $ @Model.Costo
+            </h4>
+
+        </div>
+
+        <hr />
+
+        <div class="mb-3">
+            <h5>Ingredientes</h5>
+            <p>@Model.Ingredientes</p>
+        </div>
+
+        <div class="mb-4">
+            <h5>Descripción</h5>
+            <p>@Model.Descripcion</p>
+        </div>
+
+        <div class="d-flex justify-content-center gap-3">
+
+            <a asp-action="HacerPedido"
+               asp-route-idPlato="@Model.IdPlato"
+               class="btn btn-success btn-lg">
+                Hacer pedido
+            </a>
+
+            <a asp-action="ExplorarPorRestaurante"
+               asp-route-idRes="@Model.IdRes"
+               class="btn btn-primary btn-lg">
+                Ver más platos del restaurante
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
