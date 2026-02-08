@@ -1,0 +1,74 @@
+@model Bar.Models.Usuario
+
+<div class="container mt-5">
+    <div class="card shadow p-4">
+
+        <h3 class="text-center mb-4">Editar perfil</h3>
+
+        <form asp-action="Editar"
+              method="post"
+              enctype="multipart/form-data">
+
+            <input type="hidden" asp-for="IdUsuario" />
+
+            <div class="text-center mb-3">
+                <img src="@(string.IsNullOrEmpty(Model.Avatar)
+                            ? "/img/default-avatar.png"
+                            : Model.Avatar)"
+                     class="rounded-circle"
+                     style="width:120px; height:120px; object-fit:cover;" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Cambiar avatar</label>
+                <input type="file"
+                       name="avatar"
+                       class="form-control"
+                       accept="image/*" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Nombre</label>
+                <input asp-for="Nombre" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Apellido</label>
+                <input asp-for="Apellido" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Nick</label>
+                <input asp-for="Nick" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Domicilio</label>
+                <input asp-for="Domicilio" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Telefono</label>
+                <input asp-for="Telefono" class="form-control" />
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-success">
+                    Guardar cambios
+                </button>
+
+                <a asp-action="Perfil"
+                   class="btn btn-secondary">
+                    Cancelar
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+</div>

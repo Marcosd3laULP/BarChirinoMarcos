@@ -69,6 +69,52 @@ public class AuthController : Controller
         return RedirectToAction("Login");
     }
 
+    public IActionResult Perfil()
+{
+    int idUsuario = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+    var usuario = _repo.ObtenerPorId(idUsuario);
+
+    return View(usuario);
+}
+
+public IActionResult Editar()
+{
+    int idUsuario = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+    var usuario = _repo.ObtenerPorId(idUsuario);
+    return View(usuario);
+}
+
+[HttpPost]
+public IActionResult Editar(Usuario model, IFormFile avatar)
+{
+    if (avatar != null && avatar.Length > 0)
+    {
+        string carpeta = Path.Combine(Directory.GetCurrentDirectory(),
+                                      "wwwroot/img/avatars");
+
+        if (!Directory.Exists(carpeta))
+            Directory.CreateDirectory(carpeta);
+
+        string nombreArchivo = $"{Guid.NewGuid()}{Path.GetExtension(avatar.FileName)}";
+        string rutaCompleta = Path.Combine(carpeta, nombreArchivo);
+
+        using (var stream = new FileStream(rutaCompleta, FileMode.Create))
+        {
+            avatar.CopyTo(stream);
+        }
+
+        model.Avatar = "/img/avatars/" + nombreArchivo;
+    }
+
+    _repo.Editar(model);
+
+    return RedirectToAction("Perfil");
+}
+
+
+
+
     //REGISTRO DE NUEVO USUARIO//
 
     [HttpGet]

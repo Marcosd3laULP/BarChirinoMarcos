@@ -26,6 +26,45 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item dropdown">
+    @if (User.Identity.IsAuthenticated)
+{
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle"
+           href="#"
+           id="perfilDropdown"
+           role="button"
+           data-bs-toggle="dropdown"
+           aria-expanded="false">
+            Perfil
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-end"
+            aria-labelledby="perfilDropdown">
+
+            <li>
+                <a class="dropdown-item"
+                   asp-controller="Auth"
+                   asp-action="Perfil">
+                    Ir a perfil
+                </a>
+            </li>
+
+            <li><hr class="dropdown-divider"></li>
+
+            <li>
+                <a class="dropdown-item text-danger"
+                   asp-controller="Auth"
+                   asp-action="Logout">
+                    Cerrar sesión
+                </a>
+            </li>
+
+        </ul>
+    </li>
+}
+
+
                     </ul>
                 </div>
             </div>

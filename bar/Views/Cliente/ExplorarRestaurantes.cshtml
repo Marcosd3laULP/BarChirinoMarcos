@@ -1,0 +1,107 @@
+<div id="appRestaurantes" class="container mt-4">
+
+    <h2 class="text-center mb-4">
+        Explorar Restaurantes
+    </h2>
+
+    <!-- Filtros -->
+    <button class="btn btn-outline-secondary mb-3"
+            data-bs-toggle="collapse"
+            data-bs-target="#panelFiltros">
+        Filtros
+    </button>
+
+    <div id="panelFiltros" class="collapse mb-4">
+        <div class="card card-body shadow-sm">
+
+            <div class="row g-2">
+
+                <div class="col-md-4">
+                    <input class="form-control"
+                           placeholder="Buscar por nombre"
+                           v-model="filtroNombre">
+                </div>
+
+                <div class="col-md-4">
+                    <input class="form-control"
+                           placeholder="Ubicación"
+                           v-model="filtroUbicacion">
+                </div>
+
+                <div class="col-md-4">
+                    <input class="form-control"
+                           placeholder="Especialidad"
+                           v-model="filtroEspecialidad">
+                </div>
+
+                <div class="col-md-12 d-grid mt-2">
+                    <button class="btn btn-primary"
+                            v-on:click="buscar">
+                        Aplicar filtros
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="row g-4">
+
+        <div class="col-md-4"
+             v-for="r in restaurantes"
+             :key="r.idRes">
+
+            <div class="card h-100 shadow-sm"
+                 style="cursor:pointer"
+                 v-on:click="verRestaurante(r.idRes)">
+
+                <img class="card-img-top"
+                     :src="r.imagen ? r.imagen : '/img/default-restaurante.jpg'"
+                     style="height:220px; object-fit:cover">
+
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ r.nombre }}</h5>
+
+                    <p class="mb-1">
+                         {{ r.ubicacion }}
+                    </p>
+
+                    <p class="text-muted">
+                         {{ r.especialidad }}
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Paginado -->
+    <div class="d-flex justify-content-center align-items-center gap-3 mt-4">
+
+        <button class="btn btn-secondary"
+                v-on:click="prevPage"
+                :disabled="page === 1">
+            Anterior
+        </button>
+
+        <span>
+            Página {{ page }} de {{ totalPages }}
+        </span>
+
+        <button class="btn btn-secondary"
+                v-on:click="nextPage"
+                :disabled="page === totalPages">
+            Siguiente
+        </button>
+
+    </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="~/js/restaurants-public.js"></script>
+}

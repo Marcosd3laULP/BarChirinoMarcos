@@ -18,7 +18,7 @@ public class ClienteController : Controller
     {
         _repo = repo;
         repoPlato = _repoPlato;
-        repoResto = repoResto;
+        repoResto = _repoResto;
     }
 
     public IActionResult Index()
@@ -29,6 +29,12 @@ public class ClienteController : Controller
      public IActionResult ExplorarPlatos()
     {    
         return View();
+    }
+
+    public IActionResult Detalle(int id)
+    {
+        var plato = repoPlato.ObtenerPorId(id);
+        return View(plato);
     }
 
     [HttpGet]
@@ -89,5 +95,43 @@ public IActionResult GetPlatosPorRestaurante(
         total = total
     });
 }
+
+public IActionResult ExplorarRestaurantes()
+{
+    return View();
+}
+
+[HttpGet]
+public IActionResult GetRestaurantesPublicos(
+    int page = 1,
+    int pageSize = 6,
+    string? nombre = null,
+    string? ubicacion = null,
+    string? especialidad = null
+)
+{
+    int total = repoResto.ContarRestaurantesFiltradosPublicos(
+        nombre,
+        ubicacion,
+        especialidad
+    );
+
+    var restaurantes = repoResto.ObtenerRestaurantesFiltradosPublicosPaginado(
+        page,
+        pageSize,
+        nombre,
+        ubicacion,
+        especialidad
+    );
+
+    return Json(new
+    {
+        data = restaurantes,
+        total = total,
+        page = page,
+        pageSize = pageSize
+    });
+}
+
 
 }

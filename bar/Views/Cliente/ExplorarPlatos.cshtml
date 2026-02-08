@@ -48,51 +48,55 @@
 
 </div>
 
+<div class="row g-4 mt-3">
 
-<div class="col-md-4"
-v-for="p in platos"
-:key="p.idPlato">
+        <div class="col-md-4"
+             v-for="p in platos"
+             :key="p.idPlato">
 
-<div class="card h-100 shadow-sm plato-card"
-v-on:click="verDetalle(p.idPlato)"
-style="cursor:pointer">
-    <img 
-    class="card-img-top"
-    :src="p.imagen ? p.imagen : '/img/default-plato.png'"
-    style="height: 220px, object-fit:cover"/>
+            <div class="card h-100 shadow-sm plato-card"
+                 v-on:click="verDetalle(p.idPlato)"
+                 style="cursor:pointer">
 
-    <div class="card-body text-center">
-        <h5 class="card-title">
-            {{ p.nombre }}
-        </h5>
+                <img class="card-img-top"
+                     :src="p.imagen ? p.imagen : '/img/default-plato.png'"
+                     style="height:220px; object-fit:cover;" />
 
-        <p class="card-text fw-bold text-success">
-            $ {{ p.costo }}
-        </p>
+                <div class="card-body text-center">
+                    <h5 class="card-title">
+                        {{ p.nombre }}
+                    </h5>
+
+                    <p class="card-text fw-bold text-success">
+                        $ {{ p.costo }}
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
     </div>
-</div>
-</div>
 
-<div class="d-flex justify-content-center align-items-center gap-2 mt-3">
+    <!-- PAGINADO -->
+    <div class="d-flex justify-content-center align-items-center gap-2 mt-4">
 
-    <button class="btn btn-secondary"
-            v-on:click="prevPage"
-            :disabled="page === 1">
-        Anterior
-    </button>
+        <button class="btn btn-secondary"
+                v-on:click="prevPage"
+                :disabled="page === 1">
+            Anterior
+        </button>
 
-    <span>
-        Página {{ page }} de {{ totalPages }}
-    </span>
+        <span>
+            Página {{ page }} de {{ totalPages }}
+        </span>
 
-    <button class="btn btn-secondary"
-            v-on:click="nextPage"
-            :disabled="page === totalPages">
-        Siguiente
-    </button>
+        <button class="btn btn-secondary"
+                v-on:click="nextPage"
+                :disabled="page === totalPages">
+            Siguiente
+        </button>
 
-</div>
-
+    </div>
 
 </div>
 @section Scripts {

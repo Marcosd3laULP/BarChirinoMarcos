@@ -130,4 +130,111 @@ public class RepositorioRestaurante
 
     return Mapear(reader);
     }
+
+//////////////////  LOGICA DEL CLIENTE /////////////////
+
+public int ContarRestaurantesFiltradosPublicos(
+    string? nombre,
+    string? ubicacion,
+    string? especialidad
+)
+{
+    using var conn = _database.GetConnection();
+    conn.Open();
+
+    var query = @"SELECT COUNT(*) 
+                  FROM restaurante 
+                  WHERE Estado = true";
+
+    using var cmd = new MySqlCommand();
+    cmd.Connection = conn;
+
+    if (!string.IsNullOrWhiteSpace(nombre))
+    {
+        query += " AND Nombre LIKE @nombre";
+        cmd.Parameters.AddWithValue("@nombre", $"%{nombre}%");
+    }
+
+    if (!string.IsNullOrWhiteSpace(ubicacion))
+    {
+        query += " AND Ubicacion LIKE @ubicacion";
+        cmd.Parameters.AddWithValue("@ubicacion", $"%{ubicacion}%");
+    }
+
+    if (!string.IsNullOrWhiteSpace(especialidad))
+    {
+        query += " AND Especialidad LIKE @especialidad";
+        cmd.Parameters.AddWithValue("@especialidad", $"%{especialidad}%");
+    }
+
+    cmd.CommandText = query;
+    return Convert.ToInt32(cmd.ExecuteScalar());
+}
+
+
+public List<Restaurante> ObtenerRestaurantesFiltradosPublicosPaginado(
+    int page,
+    int pageSize,
+    string? nombre,
+    string? ubicacion,
+    string? especialidad
+)
+{
+    var lista = new List<Restaurante>();
+    int offset = (page - 1) * pageSize;
+
+    using var conn = _database.GetConnection();
+    conn.Open();
+
+    var query = @"SELECT IdRes, Nombre, Ubicacion, Especialidad, Imagen
+                  FROM restaurante
+                  WHERE Estado = true";
+
+    using var cmd = new MySqlCommand();
+    cmd.Connection = conn;
+
+    if (!string.IsNullOrWhiteSpace(nombre))
+    {
+        query += " AND Nombre LIKE @nombre";
+        cmd.Parameters.AddWithValue("@nombre", $"%{nombre}%");
+    }
+
+    if (!string.IsNullOrWhiteSpace(ubicacion))
+    {
+        query += " AND Ubicacion LIKE @ubicacion";
+        cmd.Parameters.AddWithValue("@ubicacion", $"%{ubicacion}%");
+    }
+
+    if (!string.IsNullOrWhiteSpace(especialidad))
+    {
+        query += " AND Especialidad LIKE @especialidad";
+        cmd.Parameters.AddWithValue("@especialidad", $"%{especialidad}%");
+    }
+
+    query += @" ORDER BY Nombre
+                LIMIT @limit OFFSET @offset";
+
+    cmd.Parameters.AddWithValue("@limit", pageSize);
+    cmd.Parameters.AddWithValue("@offset", offset);
+
+    cmd.CommandText = query;
+
+    using var reader = cmd.ExecuteReader();
+    while (reader.Read())
+    {
+        int colImagen = reader.GetOrdinal("Imagen");
+
+        lista.Add(new Restaurante
+        {
+            IdRes = reader.GetInt32("IdRes"),
+            Nombre = reader.GetString("Nombre"),
+            Ubicacion = reader.GetString("Ubicacion"),
+            Especialidad = reader.GetString("Especialidad"),
+            Imagen = reader.IsDBNull(colImagen) ? null : reader.GetString("Imagen")
+        });
+    }
+
+    return lista;
+}
+
 }
