@@ -1,0 +1,8 @@
+namespace Bar.Models;
+public class Bebida
+{
+    public int IdBebida { get; set; }
+    public string Nombre { get; set; }
+    public string Tipo { get; set; }
+    public int Costo { get; set; }
+}

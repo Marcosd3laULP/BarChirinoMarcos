@@ -1,0 +1,10 @@
+<tr v-for="p in pedidos">
+    <td>{{ p.idPedido }}</td>
+    <td>{{ p.monto }}</td>
+    <td>{{ p.estado }}</td>
+    <td>
+        <button v-if="p.estado=='pendiente'" @@click="completar(p.idPedido)">
+            Completar
+        </button>
+    </td>
+</tr>

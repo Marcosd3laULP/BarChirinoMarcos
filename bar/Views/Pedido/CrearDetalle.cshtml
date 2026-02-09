@@ -1,0 +1,71 @@
+@model Bar.Models.PedidoDetalleVM;
+
+@{
+    ViewData["Title"] = "Crear pedido";
+}
+
+<h2>@Model.Plato.Nombre</h2>
+<p>Precio base: <strong>$@Model.Plato.Costo</strong></p>
+
+<form asp-action="CrearDetalle" method="post">
+    <div id="pedidoApp"
+         data-precio-plato="@Model.Plato.Costo"
+         data-bebidas='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Bebidas))'>
+
+        <!-- IDs ocultos -->
+        <input type="hidden" name="IdPedido" value="@Model.IdPedido" />
+        <input type="hidden" name="IdPlato" value="@Model.IdPlato" />
+
+        <!-- BEBIDA -->
+        <div>
+            <label>Bebida</label>
+            <select name="IdBebida" v-model="idBebida">
+                <option value="">Sin bebida</option>
+                <option v-for="b in bebidas" :value="b.idBebida">
+                    {{ b.nombre }} (+${{ b.costo }})
+                </option>
+            </select>
+        </div>
+
+        <!-- GUARNICION -->
+        <div>
+            <label>Guarnición</label>
+            <select name="IdGuarnicion">
+                <option value="">Sin guarnición</option>
+                @foreach (var g in Model.Guarniciones)
+                {
+                    <option value="@g.IdGuarnicion">@g.Nombre</option>
+                }
+            </select>
+        </div>
+
+        <!-- ADEREZO -->
+        <div>
+            <label>Aderezo</label>
+            <select name="IdAderezo">
+                <option value="">Sin aderezo</option>
+                @foreach (var a in Model.Aderezos)
+                {
+                    <option value="@a.IdAderezo">@a.Nombre</option>
+                }
+            </select>
+        </div>
+
+        <hr />
+
+        <!-- SUBTOTAL -->
+        <h3 v-if="!cargando">Subtotal: ${{ subTotal }}</h3>
+            <p v-if="cargando">Calculando...</p>
+            <p v-if="error" style="color:red">{{ error }}</p>
+
+<input type="hidden" name="SubTotal" :value="subTotal" />
+
+        <button type="submit">Realizar pedido</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="~/js/pedido-detalle.js"></script>
+}
