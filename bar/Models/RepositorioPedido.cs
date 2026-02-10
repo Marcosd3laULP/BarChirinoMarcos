@@ -137,6 +137,65 @@ public int ContarPedidosCliente(
     return Convert.ToInt32(cmd.ExecuteScalar());
 }
 
+public List<PedidoClienteVM> ObtenerPedidosClientePaginadoMV(
+    int idUsuario,
+    int page,
+    int pageSize,
+    DateTime? desde,
+    DateTime? hasta
+)
+{
+    var lista = new List<PedidoClienteVM>();
+    int offset = (page - 1) * pageSize;
+
+    using var conn = _database.GetConnection();
+    conn.Open();
+
+    var sql = @"
+        SELECT
+            p.IdPedido,
+            p.Fecha,
+            p.Estado,
+            p.Monto,
+            pl.Nombre AS plato,
+            b.Nombre AS bebida,
+            g.Nombre AS guarnicion,
+            a.Nombre AS aderezo
+        FROM pedido p
+        INNER JOIN pedidodetalle d ON d.IdPedido = p.IdPedido
+        INNER JOIN plato pl ON pl.IdPlato = d.IdPlato
+        LEFT JOIN bebida b ON b.IdBebida = d.IdBebida
+        LEFT JOIN guarnicion g ON g.IdGuarnicion = d.IdGuarnicion
+        LEFT JOIN aderezo a ON a.IdAderezo = d.IdAderezo
+        WHERE p.IdUsuario = @idUsuario
+        ORDER BY p.fecha DESC
+        LIMIT @offset, @pageSize";
+
+    using var cmd = new MySqlCommand(sql, conn);
+    cmd.Parameters.AddWithValue("@idUsuario", idUsuario);
+    cmd.Parameters.AddWithValue("@offset", offset);
+    cmd.Parameters.AddWithValue("@pageSize", pageSize);
+
+    using var reader = cmd.ExecuteReader();
+    while (reader.Read())
+    {
+        lista.Add(new PedidoClienteVM
+        {
+            IdPedido = reader.GetInt32("IdPedido"),
+            Fecha = reader.GetDateTime("Fecha"),
+            Estado = reader.GetString("Estado"),
+            Monto = reader.GetDecimal("Monto"),
+
+            NombrePlato = reader.GetString("plato"),
+            Bebida = reader.IsDBNull(reader.GetOrdinal("bebida")) ? null : reader.GetString("bebida"),
+            Guarnicion = reader.IsDBNull(reader.GetOrdinal("guarnicion")) ? null : reader.GetString("guarnicion"),
+            Aderezo = reader.IsDBNull(reader.GetOrdinal("aderezo")) ? null : reader.GetString("aderezo")
+        });
+    }
+
+    return lista;
+}
+
 public List<Pedido> ObtenerPedidosClientePaginado(
     int idUsuario,
     int page,
@@ -290,6 +349,93 @@ public List<Pedido> ObtenerPedidosRestaurantePaginado(
 
     return lista;
 }
+
+public List<PedidoClienteVM> ObtenerPedidosRestaurantePaginadoVM(
+    int idRestaurante,
+    int page,
+    int pageSize,
+    DateTime? desde,
+    DateTime? hasta
+)
+{
+    var lista = new List<PedidoClienteVM>();
+    int offset = (page - 1) * pageSize;
+
+    using var conn = _database.GetConnection();
+    conn.Open();
+
+    var query = @"
+        SELECT
+            p.IdPedido,
+            p.Fecha,
+            p.Estado,
+            p.Monto,
+            pl.Nombre AS NombrePlato,
+            b.Nombre AS Bebida,
+            g.Nombre AS Guarnicion,
+            a.Nombre AS Aderezo
+        FROM pedido p
+        INNER JOIN pedidodetalle pd ON p.IdPedido = pd.IdPedido
+        INNER JOIN plato pl ON pd.IdPlato = pl.IdPlato
+        LEFT JOIN bebida b ON pd.IdBebida = b.IdBebida
+        LEFT JOIN guarnicion g ON pd.IdGuarnicion = g.IdGuarnicion
+        LEFT JOIN aderezo a ON pd.IdAderezo = a.IdAderezo
+        WHERE pl.IdRes = @idRes
+    ";
+
+    using var cmd = new MySqlCommand();
+    cmd.Connection = conn;
+    cmd.Parameters.AddWithValue("@idRestaurante", idRestaurante);
+
+    if (desde.HasValue)
+    {
+        query += " AND p.Fecha >= @desde";
+        cmd.Parameters.AddWithValue("@desde", desde.Value);
+    }
+
+    if (hasta.HasValue)
+    {
+        query += " AND p.Fecha <= @hasta";
+        cmd.Parameters.AddWithValue("@hasta", hasta.Value);
+    }
+
+    query += @"
+        ORDER BY p.Fecha DESC
+        LIMIT @limit OFFSET @offset
+    ";
+
+    cmd.Parameters.AddWithValue("@limit", pageSize);
+    cmd.Parameters.AddWithValue("@offset", offset);
+
+    cmd.CommandText = query;
+
+    using var reader = cmd.ExecuteReader();
+    while (reader.Read())
+    {
+        lista.Add(new PedidoClienteVM
+        {
+            IdPedido = reader.GetInt32("IdPedido"),
+            Fecha = reader.GetDateTime("Fecha"),
+            Estado = reader.GetString("Estado"),
+            Monto = reader.GetDecimal("Monto"),
+
+            NombrePlato = reader.GetString("NombrePlato"),
+            Bebida = reader.IsDBNull(reader.GetOrdinal("Bebida")) 
+                        ? null 
+                        : reader.GetString("Bebida"),
+            Guarnicion = reader.IsDBNull(reader.GetOrdinal("Guarnicion")) 
+                        ? null 
+                        : reader.GetString("Guarnicion"),
+            Aderezo = reader.IsDBNull(reader.GetOrdinal("Aderezo")) 
+                        ? null 
+                        : reader.GetString("Aderezo")
+        });
+    }
+
+    return lista;
+}
+
+
 
 
 }

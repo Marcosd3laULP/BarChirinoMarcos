@@ -9,6 +9,11 @@ builder.Services.AddScoped<Bar.Data.Database>();
 builder.Services.AddScoped<RepositorioUsuario>();
 builder.Services.AddScoped<RepositorioRestaurante>();
 builder.Services.AddScoped<RepositorioPlato>();
+builder.Services.AddScoped<RepositorioPedido>();
+builder.Services.AddScoped<RepositorioPedidoDetalle>();
+builder.Services.AddScoped<RepositorioBebida>();
+builder.Services.AddScoped<RepositorioAderezo>();
+builder.Services.AddScoped<RepositorioGuarnicion>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

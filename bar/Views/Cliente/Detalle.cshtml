@@ -35,10 +35,11 @@
 
         <div class="d-flex justify-content-center gap-3">
 
-            <a asp-action="HacerPedido"
-               asp-route-idPlato="@Model.IdPlato"
-               class="btn btn-success btn-lg">
-                Hacer pedido
+            <a asp-controller="Pedido"
+                asp-action="CrearDetalle"
+                asp-route-idPlato="@Model.IdPlato"
+                class="btn btn-success btn-lg">
+                 Hacer pedido
             </a>
 
             <a asp-action="ExplorarPorRestaurante"

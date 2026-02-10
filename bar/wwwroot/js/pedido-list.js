@@ -1,5 +1,5 @@
 new Vue({
-    el: '#app',
+    el: '#app-list',
     data: {
         pedidos: [],
         page: 1,
@@ -40,9 +40,22 @@ new Vue({
         completar(id) {
             axios.post('/Pedido/CambiarEstado', { idPedido: id })
                 .then(() => this.cargar())
-        }
+        },
+
+        formatearFecha(fecha) {
+        if (!fecha) return '';
+
+        const d = new Date(fecha);
+        return d.toLocaleDateString('es-AR');
+    }
     },
     mounted() {
         this.cargar()
+    },
+    computed: {
+    totalPages() {
+        return Math.ceil(this.total / this.pageSize)
     }
+}
+
 })

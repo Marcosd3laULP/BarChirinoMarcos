@@ -6,10 +6,17 @@ document.addEventListener("DOMContentLoaded", function () {
     new Vue({
         el: "#pedidoApp",
         data: {
+            bebidas: JSON.parse(appElement.dataset.bebidas),
+            guarniciones: JSON.parse(appElement.dataset.guarniciones),
+            aderezos: JSON.parse(appElement.dataset.aderezos),
+
+            idBebida: "",
+            idGuarnicion: "",
+            idAderezo: "",
+
             idPedido: appElement.querySelector('input[name="IdPedido"]').value,
             idPlato: appElement.querySelector('input[name="IdPlato"]').value,
 
-            idBebida: "",
             subTotal: parseInt(appElement.dataset.precioPlato),
 
             cargando: false,
@@ -17,6 +24,8 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         watch: {
             idBebida() {
+                this.idBebida = this.idBebida 
+                ? parseInt(this.idBebida) : null;
                 this.calcularSubtotal();
             }
         },

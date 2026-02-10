@@ -9,13 +9,19 @@
     <h3> ¿Que delicia vamos a explorar hoy?</h3>
 
     <div style="margin-top:20px">
-        <a asp-asp-controller="Cliente" asp-action="ExplorarPlatos"class="btn btn-success">
+        <a asp-controller="Cliente" asp-action="ExplorarPlatos"class="btn btn-success">
             Explorar platos
         </a>
     </div>
 
     <div style="margin-top:20px">
-        <a asp-asp-controller="Restaurante" asp-action="ExplorarRestaurantes"class="btn btn-success">
+        <a asp-controller="Pedido" asp-action="PedidosCliente"class="btn btn-success">
+            Mis pedidos
+        </a>
+    </div>
+
+    <div style="margin-top:20px">
+        <a asp-controller="Cliente" asp-action="ExplorarRestaurantes"class="btn btn-success">
             Conocer Restaurantes
         </a>
     </div>

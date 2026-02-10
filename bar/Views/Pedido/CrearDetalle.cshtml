@@ -7,8 +7,10 @@
 <h2>@Model.Plato.Nombre</h2>
 <p>Precio base: <strong>$@Model.Plato.Costo</strong></p>
 
-<form asp-action="CrearDetalle" method="post">
+<form asp-action="GuardarDetalle" method="post">
     <div id="pedidoApp"
+         data-guarniciones='@Html.Raw(Json.Serialize(Model.Guarniciones))'
+         data-aderezos='@Html.Raw(Json.Serialize(Model.Aderezos))'
          data-precio-plato="@Model.Plato.Costo"
          data-bebidas='@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Bebidas))'>
 
@@ -21,8 +23,8 @@
             <label>Bebida</label>
             <select name="IdBebida" v-model="idBebida">
                 <option value="">Sin bebida</option>
-                <option v-for="b in bebidas" :value="b.idBebida">
-                    {{ b.nombre }} (+${{ b.costo }})
+                <option v-for="b in bebidas" :value="b.IdBebida">
+                    {{ b.Nombre }} (+${{ b.Costo }})
                 </option>
             </select>
         </div>

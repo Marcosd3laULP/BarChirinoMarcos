@@ -41,89 +41,48 @@ public class PedidoController : Controller
     }
 
     [HttpPost]
-    public IActionResult Crear(int idPlato)
-    {
-         int idUsuario = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-        if (idUsuario == null)
-        {
-            return RedirectToAction("Login", "Usuario");
-        }
-
-        var plato = _repoPlato.ObtenerPorId(idPlato);
-        if(plato == null)
-        {
-            return NotFound();
-        }
-
-        var pedido = new Pedido
-        {
-            IdUsuario = idUsuario,
-            Fecha = DateTime.Now,
-            Estado = "pendiente",
-            Monto = plato.Costo
-        };
-
-        //  Guardar y obtener ID
-        int idPedido = _repoPedido.Crear(pedido);
-
-        return RedirectToAction("CrearDetalle", new
-        {
-            idPedido = idPedido,
-            idPlato = idPlato
-        });
-    }
-
-    [HttpPost]
-public IActionResult CalcularSubtotal(
-    int idPedido,
-    int idPlato,
-    int? idBebida
-)
+public IActionResult CalcularSubtotal([FromBody] CalcularSubtotalDTO dto)
 {
-    // Validar pedido
-    var pedido = _repoPedido.ObtenerPorId(idPedido);
+    var pedido = _repoPedido.ObtenerPorId(dto.IdPedido);
     if (pedido == null || pedido.Estado != "pendiente")
-    {
-        return BadRequest(new { error = "Pedido inválido" });
-    }
+        return BadRequest();
 
-    // Obtener plato
-    var plato = _repoPlato.ObtenerPorId(idPlato);
+    var plato = _repoPlato.ObtenerPorId(dto.IdPlato);
     if (plato == null)
-    {
-        return BadRequest(new { error = "Plato inexistente" });
-    }
+        return BadRequest();
 
     int subtotal = plato.Costo;
 
-    // Sumar bebida si existe
-    if (idBebida.HasValue)
+    if (dto.IdBebida.HasValue)
     {
-        var bebida = _repoBebida.ObtenerPorId(idBebida.Value);
+        var bebida = _repoBebida.ObtenerPorId(dto.IdBebida.Value);
         if (bebida != null)
-        {
             subtotal += bebida.Costo;
-        }
     }
 
-    // Devolver subtotal
-    return Json(new
-    {
-        subTotal = subtotal
-    });
+    return Json(new { subTotal = subtotal });
 }
 
+
 [HttpGet]
-public IActionResult CrearDetalle(int idPedido, int idPlato)
+public IActionResult CrearDetalle(int idPlato)
 {
-    var pedido = _repoPedido.ObtenerPorId(idPedido);
-    if (pedido == null || pedido.Estado != "pendiente")
-        return NotFound();
+
+     int idUsuario = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
     var plato = _repoPlato.ObtenerPorId(idPlato);
     if (plato == null)
         return NotFound();
+    
+    var pedido = new Pedido
+    {
+        IdUsuario = idUsuario,
+        Monto = plato.Costo,
+        Fecha = DateTime.Now,
+        Estado = "pendiente"
+    };
+
+    int idPedido = _repoPedido.Crear(pedido);
 
     var vm = new PedidoDetalleVM
     {
@@ -140,7 +99,7 @@ public IActionResult CrearDetalle(int idPedido, int idPlato)
 }
 
 [HttpPost]
-public IActionResult CrearDetalle(PedidoDetalleVM vm)
+public IActionResult GuardarDetalle(PedidoDetalleVM vm)
 {
 
     var pedido = _repoPedido.ObtenerPorId(vm.IdPedido);
@@ -182,6 +141,13 @@ public IActionResult CrearDetalle(PedidoDetalleVM vm)
 }
 
 [HttpGet]
+public IActionResult PedidosCliente()
+{
+    return View();
+}
+
+
+[HttpGet]
 public IActionResult ListarPedidosCliente(
     int page = 1,
     DateTime? desde = null,
@@ -192,7 +158,7 @@ public IActionResult ListarPedidosCliente(
     int pageSize = 5;
 
     var total = _repoPedido.ContarPedidosCliente(idUsuario, desde, hasta);
-    var pedidos = _repoPedido.ObtenerPedidosClientePaginado(
+    var pedidos = _repoPedido.ObtenerPedidosClientePaginadoMV(
         idUsuario, page, pageSize, desde, hasta
     );
 
@@ -202,6 +168,13 @@ public IActionResult ListarPedidosCliente(
         pedidos
     });
 }
+
+[HttpGet]
+public IActionResult PedidosCocinero()
+{
+    return View();
+}
+
 
 [HttpGet]
 public IActionResult ListarPedidosCocinero(
@@ -219,7 +192,7 @@ public IActionResult ListarPedidosCocinero(
     int pageSize = 5;
 
     var total = _repoPedido.ContarPedidosRestaurante(resto.IdRes, desde, hasta);
-    var pedidos = _repoPedido.ObtenerPedidosRestaurantePaginado(
+    var pedidos = _repoPedido.ObtenerPedidosRestaurantePaginadoVM(
         resto.IdRes, page, pageSize, desde, hasta
     );
 
