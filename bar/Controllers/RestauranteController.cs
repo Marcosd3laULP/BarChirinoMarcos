@@ -4,7 +4,7 @@ using System.Security.Claims;
 using Bar.Models;
 using Bar.Repositorios;
 
-[Authorize(Roles = "resto")]
+[Authorize(Roles = "resto, admin")]
 public class RestauranteController : Controller
 {
     private readonly RepositorioRestaurante _repo;

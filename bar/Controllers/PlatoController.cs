@@ -5,7 +5,7 @@ using Bar.Models;
 using Bar.Repositorios;
 using Bar.Data;
 
-[Authorize (Roles = "resto")]
+[Authorize (Roles = "resto, admin")]
 public class PlatoController : Controller
 {
     private readonly RepositorioPlato repoPlato;
@@ -63,9 +63,9 @@ public class PlatoController : Controller
         return Json(new
         {
             data = platos,
-            total = total,
-            page = page,
-            pageSize = pageSize
+            total,
+            page,
+            pageSize
         });
     }
 

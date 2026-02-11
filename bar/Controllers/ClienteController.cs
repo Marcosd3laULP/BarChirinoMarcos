@@ -4,7 +4,7 @@ using System.Security.Claims;
 using Bar.Models;
 using Bar.Repositorios;
 
-[Authorize(Roles = "user")]
+[Authorize(Roles = "user, admin")]
 public class ClienteController : Controller
 {
     private readonly RepositorioUsuario _repo;
