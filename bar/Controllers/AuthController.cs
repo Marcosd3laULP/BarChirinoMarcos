@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using Bar.Models;
@@ -58,9 +59,12 @@ public class AuthController : Controller
         else if(user.Rol == RolUsuario.user)
         {
             return RedirectToAction("Index", "Cliente");
+        } else if(user.Rol == RolUsuario.admin)
+        {
+            return RedirectToAction("Index", "Admin");
         }
-
         return RedirectToAction("Index", "Home");
+
     }
 
     public async Task<IActionResult> Logout()
@@ -88,6 +92,10 @@ public IActionResult Editar()
 [HttpPost]
 public IActionResult Editar(Usuario model, IFormFile avatar)
 {
+
+    if (!ModelState.IsValid)
+        return View(model);
+        
     if (avatar != null && avatar.Length > 0)
     {
         string carpeta = Path.Combine(Directory.GetCurrentDirectory(),
@@ -113,8 +121,6 @@ public IActionResult Editar(Usuario model, IFormFile avatar)
 }
 
 
-
-
     //REGISTRO DE NUEVO USUARIO//
 
     [HttpGet]
@@ -124,27 +130,49 @@ public IActionResult Editar(Usuario model, IFormFile avatar)
     }
 
     [HttpPost]
-    public IActionResult Registro(Usuario usuario, string password, IFormFile? Avatar)
+public IActionResult Registro(Usuario usuario, string password, IFormFile? Avatar)
+{
+    if (string.IsNullOrWhiteSpace(password))
     {
-        usuario.PasswordHash = PassHasher.Hash(password);
+    ModelState.AddModelError("Password", "La contraseña es obligatoria");
+    }
+    else if (password.Length < 6)
+    {   
+    ModelState.AddModelError("Password", "La contraseña debe tener al menos 6 caracteres");
+    }
 
-        //PARA ASIGNAR UN ROL POR DEFECTO
-        if (usuario.Rol == 0)
-            usuario.Rol = RolUsuario.user;
 
-        if (Avatar != null && Avatar.Length > 0)
+    // Si el modelo es inválido
+    if (!ModelState.IsValid)
+        return View(usuario);
+
+    usuario.PasswordHash = PassHasher.Hash(password);
+
+    if (usuario.Rol == 0)
+        usuario.Rol = RolUsuario.user;
+
+    if (Avatar != null && Avatar.Length > 0)
+    {
+        var extension = Path.GetExtension(Avatar.FileName).ToLower();
+
+        if (extension != ".jpg" && extension != ".png" && extension != ".jpeg")
         {
-            var fileName = Guid.NewGuid() + Path.GetExtension(Avatar.FileName);
-            var path = Path.Combine("wwwroot/avatars", fileName);
-
-            using var stream = new FileStream(path, FileMode.Create);
-            Avatar.CopyTo(stream);
-
-            usuario.Avatar = "/avatars/" + fileName;
+            ModelState.AddModelError("Avatar", "Formato de imagen no permitido");
+            return View(usuario);
         }
 
-        _repo.Crear(usuario);
+        var fileName = Guid.NewGuid() + extension;
+        var path = Path.Combine("wwwroot/avatars", fileName);
 
-        return RedirectToAction("Login");
+        using var stream = new FileStream(path, FileMode.Create);
+        Avatar.CopyTo(stream);
+
+        usuario.Avatar = "/avatars/" + fileName;
     }
+
+    _repo.Crear(usuario);
+
+    return RedirectToAction("Login");
+}
+
 }

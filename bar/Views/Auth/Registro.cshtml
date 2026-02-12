@@ -1,21 +1,42 @@
-<form asp-action="Registro" method="post" enctype="multipart/form-data">
+@using Bar.Models
+@model Usuario;
 
-    <input name="Nombre" placeholder="Nombre" required/>
-    <input name="Apellido" placeholder="Apellido" required/>
-    <input name="Nick" placeholder="Nick/apodo" required/>
-    <input name="Email" placeholder="Correo electronico" required/>
-    <input name="Password" placeholder="Contraseña" required/>
+<div class="registro-wrapper">
+    <div class="registro-card">
 
-    <input name="Telefono" placeholder="Telefono" required/>
-    <input name="Domicilio" placeholder="Domicilio" required/>
+        <h2>Crear Cuenta</h2>
 
-    <select name="Rol">
-        <option value="user">Cliente</option>
-        <option value="resto">Vendedor</option>
-    </select>
+        <form asp-action="Registro" method="post" enctype="multipart/form-data">
 
-    <input type="file" name="Avatar"/>
+            <div asp-validation-summary="All" class="validation-summary"></div>
 
-    <button type="submit">Registrarse</button>
+            <input asp-for="Nombre" placeholder="Nombre" />
+            <span asp-validation-for="Nombre"></span>
 
-</form>
+            <input asp-for="Apellido" placeholder="Apellido" />
+            <span asp-validation-for="Apellido"></span>
+
+            <input asp-for="Nick" placeholder="Nick / Apodo" />
+            <span asp-validation-for="Nick"></span>
+
+            <input asp-for="Email" placeholder="Correo electrónico" />
+            <span asp-validation-for="Email"></span>
+
+            <input type="password" name="password" placeholder="Contraseña" />
+
+            <input asp-for="Telefono" placeholder="Teléfono" />
+            <input asp-for="Domicilio" placeholder="Domicilio" />
+
+            <select asp-for="Rol">
+                <option value="user">Cliente</option>
+                <option value="resto">Vendedor</option>
+            </select>
+
+            <input type="file" name="Avatar" />
+
+            <button type="submit">Registrarse</button>
+
+        </form>
+
+    </div>
+</div>

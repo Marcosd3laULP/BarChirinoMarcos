@@ -40,6 +40,7 @@ public class PedidoController : Controller
 
     }
 
+[Authorize(Roles = "user, admin")]
     [HttpPost]
 public IActionResult CalcularSubtotal([FromBody] CalcularSubtotalDTO dto)
 {
@@ -63,7 +64,7 @@ public IActionResult CalcularSubtotal([FromBody] CalcularSubtotalDTO dto)
     return Json(new { subTotal = subtotal });
 }
 
-
+[Authorize(Roles = "user, admin")]
 [HttpGet]
 public IActionResult CrearDetalle(int idPlato)
 {
@@ -98,6 +99,7 @@ public IActionResult CrearDetalle(int idPlato)
     return View(vm);
 }
 
+[Authorize(Roles = "user, admin")]
 [HttpPost]
 public IActionResult GuardarDetalle(PedidoDetalleVM vm)
 {
@@ -140,13 +142,14 @@ public IActionResult GuardarDetalle(PedidoDetalleVM vm)
     return RedirectToAction("Index", "Cliente");
 }
 
+[Authorize(Roles = "user, admin")]
 [HttpGet]
 public IActionResult PedidosCliente()
 {
     return View();
 }
 
-
+[Authorize(Roles = "user, admin")]
 [HttpGet]
 public IActionResult ListarPedidosCliente(
     int page = 1,
@@ -169,13 +172,14 @@ public IActionResult ListarPedidosCliente(
     });
 }
 
+[Authorize(Roles = "resto, admin")]
 [HttpGet]
 public IActionResult PedidosCocinero()
 {
     return View();
 }
 
-
+[Authorize(Roles = "resto, admin")]
 [HttpGet]
 public IActionResult ListarPedidosCocinero(
     int page = 1,
@@ -199,7 +203,7 @@ public IActionResult ListarPedidosCocinero(
     return Json(new { total, pedidos });
 }
 
-
+[Authorize(Roles = "resto, admin")]
 [HttpPost]
 public IActionResult CambiarEstado(int idPedido)
 {

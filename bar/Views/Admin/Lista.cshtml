@@ -1,0 +1,152 @@
+<h2>Usuarios</h2>
+
+<div id="app-usuarios">
+
+<div class="mb-3">
+
+    <button class="btn btn-outline-secondary"
+            data-bs-toggle="collapse"
+            data-bs-target="#panelFiltros">
+        Filtros
+    </button>
+
+    <div id="panelFiltros" class="collapse mt-3">
+        <div class="card card-body">
+
+            <div class="row g-2">
+
+                <div class="col-md-4">
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Buscar por nick"
+                           v-model="filtroNick">
+                </div>
+
+                <div class="col-md-4">
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Buscar por email"
+                           v-model="filtroEmail">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Roles</label>
+
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               value="admin"
+                               v-model="filtroRoles"
+                                @@change="page =1; cargar();">
+                        <label class="form-check-label">Admin</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               value="resto"
+                               v-model="filtroRoles"
+                                @@change="page =1; cargar();">
+                        <label class="form-check-label">Cocinero</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               value="user"
+                               v-model="filtroRoles"
+                               @@change="page =1; cargar();">
+                        <label class="form-check-label">Cliente</label>
+                    </div>
+                </div>
+
+                <div class="col-md-12 d-grid mt-2">
+                    <button class="btn btn-primary"
+                            v-on:click="buscar">
+                        Aplicar
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nick</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Activo</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr v-for="u in usuarios" :key="u.idUsuario">
+            <td>{{ u.nick }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ u.rol }}</td>
+            <td>
+                <span class="badge"
+                      :class="u.estado ? 'bg-success' : 'bg-danger'">
+                    {{ u.estado ? 'Activo' : 'No' }}
+                </span>
+            </td>
+            <td>
+                <button
+                class="btn btn-danger btn-sm"
+                v-on:click="eliminar(u.idUsuario)">
+                Eliminar
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+<!-- Paginado igual que platos -->
+
+<nav class="d-flex justify-content-center mt-3">
+    <ul class="pagination">
+
+        <li class="page-item" :class="{ disabled: page === 1 }">
+            <a class="page-link"
+               href="#"
+               v-on:click.prevent="prevPage">
+                «
+            </a>
+        </li>
+
+        <li class="page-item"
+            v-for="n in totalPages"
+            :key="n"
+            :class="{ active: n === page }">
+            <a class="page-link"
+               href="#"
+               v-on:click.prevent="irAPagina(n)">
+                {{ n }}
+            </a>
+        </li>
+
+        <li class="page-item"
+            :class="{ disabled: page === totalPages }">
+            <a class="page-link"
+               href="#"
+               v-on:click.prevent="nextPage">
+                »
+            </a>
+        </li>
+
+    </ul>
+</nav>
+
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="~/js/usuarios.js"></script>
+}

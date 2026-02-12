@@ -10,7 +10,7 @@ new Vue({
     },
     methods: {
         cargar() {
-            axios.get('/Pedido/ListarPedidosCliente', {
+            axios.get(urlListado, {
                 params: {
                     page: this.page,
                     desde: this.desde,
@@ -38,7 +38,9 @@ new Vue({
             }
         },
         completar(id) {
-            axios.post('/Pedido/CambiarEstado', { idPedido: id })
+            axios.post('/Pedido/CambiarEstado', null, 
+                { params: { idPedido: id}
+            })
                 .then(() => this.cargar())
         },
 

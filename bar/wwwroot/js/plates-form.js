@@ -8,15 +8,6 @@ new Vue({
         error: ""
     },
 
-    computed: {
-        listaIngredientes() {
-            if(!this.ingredientes) return [];
-            return this.ingredientes
-            .split(',')
-            .map(i => i.trim())
-            .filter(i => i.lenght > 0);
-        }
-    },
 
     methods: {
         previewImagen(e) {

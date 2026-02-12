@@ -5,15 +5,7 @@ new Vue({
         imagenPreview: null,
         ingredientes: document.querySelector("input[name='Ingredientes']")?.value || ""
     },
-    computed: {
-        listaIngredientes() {
-            if (!this.ingredientes) return [];
-            return this.ingredientes
-                .split(',')
-                .map(i => i.trim())
-                .filter(i => i.length > 0);
-        }
-    },
+    
     methods: {
         previewImagen(e) {
             const file = e.target.files[0];

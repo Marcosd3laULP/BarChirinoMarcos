@@ -1,0 +1,53 @@
+<h2 class="mb-4">Panel de Administración</h2>
+
+<div class="row">
+
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h5 class="card-title">Vista Cliente</h5>
+                <p class="card-text">
+                    Acceder a la vista pública de clientes.
+                </p>
+                <a asp-controller="Cliente"
+                   asp-action="Index"
+                   class="btn btn-primary w-100">
+                    Ir
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h5 class="card-title">Vista Restaurante</h5>
+                <p class="card-text">
+                    Acceder a la gestión de restaurantes.
+                </p>
+                <a asp-controller="Restaurante"
+                   asp-action="Index"
+                   class="btn btn-success w-100">
+                    Ir
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h5 class="card-title">Usuarios</h5>
+                <p class="card-text">
+                    Ver lista paginada de usuarios.
+                </p>
+                <a asp-controller="Admin"
+                   asp-action="Lista"
+                   class="btn btn-warning w-100">
+                    Ir
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>

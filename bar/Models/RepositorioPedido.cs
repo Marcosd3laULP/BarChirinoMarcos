@@ -385,7 +385,7 @@ public List<PedidoClienteVM> ObtenerPedidosRestaurantePaginadoVM(
 
     using var cmd = new MySqlCommand();
     cmd.Connection = conn;
-    cmd.Parameters.AddWithValue("@idRestaurante", idRestaurante);
+    cmd.Parameters.AddWithValue("@idRes", idRestaurante);
 
     if (desde.HasValue)
     {
